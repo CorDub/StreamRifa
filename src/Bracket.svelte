@@ -1,10 +1,5 @@
 <script>
   import OneOnOne from "./OneOnOne.svelte";
-
-  // let positions = Array.from({length: 14})
-  // for (let i = 0; i < positions.length; i++) {
-  //   positions[i] = i
-  // }
 </script>
 
 <style>
@@ -15,13 +10,11 @@
   }
 
   .bracket-half {
-    border: 1px solid black;
     width: 50%;
     display: flex;
   }
 
   .bracket-third {
-    border: 1px solid black;
     width: 33.3%;
     display: flex;
     flex-direction: column;
@@ -30,7 +23,6 @@
   }
 
   .bracket-corner {
-    border: 1px solid black;
     height: 50%;
     width: 100%;
     display: flex;

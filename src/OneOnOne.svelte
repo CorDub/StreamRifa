@@ -1,20 +1,35 @@
 <script>
-  import {onMount} from "svelte"
   let {position} = $props();
   import { finalists, eventBus } from "./sharedState.svelte";
   let nombre = $state(finalists[position]);
+  let isEditOpen = $state(false);
 
   eventBus.subscribe((value) => {
     if (value.ind === position) {
       nombre = value.nombre;
-      $state.snapshot(nombre);
     }
   })
 
   let element;
-  onMount(() => {
-    $inspect(element.classList);
-  })
+
+  function deleteFinalist() {
+    finalists[position] = "";
+    nombre  = "";
+    eventBus.set({type: "reset", ind: position, nombre: nombre});
+  }
+
+  function openEditFinalist() {
+    isEditOpen = true;
+  }
+
+  function changeName(e) {
+    console.log(e)
+    if (e.key === "Enter") {
+      finalists[position] = e.target.value;
+      nombre = e.target.value;
+      isEditOpen = false;
+    }
+  }
 
 </script>
 
@@ -22,12 +37,30 @@
   p {
     margin: 0;
     font-size: 1.5em;
-    color: red;
+    color: black;
   }
 
   .revealed {
     position: absolute;
     z-index: 2;
+  }
+
+  .finalist-spot {
+    border: 1px solid black;
+    border-radius: 15px;
+    padding: 1rem;
+    display: flex;
+  }
+
+  .finalist-cancel {
+    border: none;
+    background-color: transparent;
+    margin-left: 0.5rem;
+    font-size: 0.75em;
+  }
+
+  .finalist-cancel:hover {
+    cursor: pointer;
   }
 </style>
 
@@ -35,8 +68,22 @@
   class="one-on-one {nombre ? 'revealed': ''}"
   bind:this={element}>
   {#if nombre}
-    <p>{nombre}</p>
+    <div class="finalist-spot">
+      {#if !isEditOpen}
+        <p class="finalist-name"
+          onclick={openEditFinalist}
+          >{nombre}</p>
+      {:else}
+        <input
+          type="text"
+          value={nombre}
+          onkeydown={(e) => changeName(e)}/>
+      {/if}
+      <button class="finalist-cancel"
+        onclick={deleteFinalist}
+        >X</button>
+    </div>
   {:else}
-    <p> This is position {position}</p>
+    <p>Posicion disponible</p>
   {/if}
 </div>
