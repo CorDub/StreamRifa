@@ -11,13 +11,19 @@
   let topDiff = $state();
   let leftDiff = $state();
 
-  function distributeFinalists(nombre) {
-    if (checkDouble(nombre) === true) {
+  eventBus.subscribe((value) => {
+    if (value.type === "reset") {
+      available_positions.splice(value.ind, 0, value.ind);
+    }
+  })
+
+  function distributeFinalists() {
+    if (checkDouble() === true) {
       return;
     };
 
     if (available_positions.length === 0) {
-      error = "Todos los finalistas han estado selecionados."
+      error = "Todos los finalistas han estado seleccionados."
       return;
     };
 
@@ -29,9 +35,10 @@
     finalists[ind] = nombre;
 
     eventBus.set({ind: ind, nombre: nombre});
+    nombre = "";
   }
 
-  function checkDouble(nombre) {
+  function checkDouble() {
     for (const finalist of finalists) {
       if (finalist === nombre) {
         return true;
@@ -81,6 +88,11 @@
     z-index: 2;
     position: absolute;
     background-color: transparent;
+    transition: 2s;
+  }
+
+  .retire {
+    transform: translateY(-100vh);
   }
 
   .form {
@@ -115,9 +127,27 @@
     width: 50%;
   }
 
+  .ya-quedan {
+    margin-top: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ya-quedan p {
+    margin: 0;
+  }
+
+  .ya-quedan-number {
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 3em;
+  }
+
 </style>
 
-<div class="input-finalists">
+<div class="input-finalists {available_positions.length === 0 ? 'retire' : ''}">
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <form
     bind:this={form}
@@ -128,7 +158,7 @@
     <label
       for="finalista"
       class="form-label">
-        Ingrese los finalistas por favor señorita
+        Ingrese los finalistas por favor señora
     </label>
     <input
       type='text'
@@ -139,8 +169,25 @@
     <button
       type="button"
       class="form-button"
-      onclick={() => distributeFinalists(nombre)}>
+      onclick={distributeFinalists}>
         Ingresar
     </button>
+    <div class="ya-quedan">
+      <div>
+        {#if available_positions.length > 1}
+          <p>Ya quedan</p>
+        {:else}
+          <p>Ya queda</p>
+        {/if}
+      </div>
+      <div class="ya-quedan-number">{available_positions.length}</div>
+      <div>
+        {#if available_positions.length > 1}
+          <p>spots</p>
+        {:else}
+          <p>spot</p>
+        {/if}
+      </div>
+    </div>
   </form>
 </div>
