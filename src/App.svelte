@@ -1,7 +1,8 @@
 <script>
   import InputFinalists from "./InputFinalists.svelte";
   import Bracket from "./Bracket.svelte";
-  import GlassPanel from "./GlassPanel.svelte"
+  import GlassPanel from "./GlassPanel.svelte";
+  import MatchReady from "./MatchReady.svelte";
 </script>
 
 <svelte:head>
@@ -17,4 +18,5 @@
   <InputFinalists />
   <GlassPanel />
   <Bracket />
+  <MatchReady />
 </div>
