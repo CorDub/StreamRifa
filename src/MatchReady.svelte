@@ -3,8 +3,8 @@
   import { finalists, eventBus } from "./sharedState.svelte";
   let ready = $state('');
   let element;
-  let halfWidth = 0;
-  let halfHeight = 0;
+  let halfWidth = $state(0);
+  let halfHeight = $state(0);
   let availableStartingPositions = $state([0,2,4,6])
 
   onMount(() => {
