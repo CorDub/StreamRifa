@@ -36,6 +36,11 @@
 
     eventBus.set({ind: ind, nombre: nombre});
     nombre = "";
+
+    if (available_positions.length === 0) {
+      eventBus.set({type:"readyForMatches"});
+      console.log("sent");
+    }
   }
 
   function checkDouble() {

@@ -3,10 +3,23 @@
   import { finalists, eventBus } from "./sharedState.svelte";
   let nombre = $state(finalists[position]);
   let isEditOpen = $state(false);
+  let ready = $state("");
 
   eventBus.subscribe((value) => {
     if (value.ind === position) {
       nombre = value.nombre;
+    }
+  })
+
+  eventBus.subscribe((value) => {
+    if (value.type === "getReady") {
+      if (value.index === position) {
+        if (position < 4) {
+          ready = "vamos-left";
+        } else {
+          ready = "vamos-right";
+        }
+      }
     }
   })
 
@@ -34,6 +47,10 @@
 </script>
 
 <style>
+  .one-on-one {
+    transition: 2s;
+  }
+
   p {
     margin: 0;
     font-size: 1.5em;
@@ -62,10 +79,18 @@
   .finalist-cancel:hover {
     cursor: pointer;
   }
+
+  .vamos-left {
+    transform: translateX(-50vh);
+  }
+
+  .vamos-right {
+    transform: translateX(50vh);
+  }
 </style>
 
 <div
-  class="one-on-one {nombre ? 'revealed': ''}"
+  class="one-on-one {nombre ? 'revealed': ''} {ready ? ready : ''}"
   bind:this={element}>
   {#if nombre}
     <div class="finalist-spot">
