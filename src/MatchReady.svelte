@@ -1,6 +1,6 @@
 <script>
   import { onMount } from "svelte";
-  import { finalists, eventBus } from "./sharedState.svelte";
+  import { eventBus } from "./sharedState.svelte";
   let ready = $state('');
   let element;
   let halfWidth = $state(0);
@@ -25,11 +25,11 @@
     const ind = availableStartingPositions[randomIndex];
     const newASP = availableStartingPositions.filter(elem => elem !== availableStartingPositions[randomIndex]);
     availableStartingPositions = newASP;
-    console.log(availableStartingPositions);
+    ready = "";
 
-    eventBus.set({type:"getReady", index: ind});
+    eventBus.set({type:"getReady", index: ind, position: "left"});
     setTimeout(() => {
-      eventBus.set({type:"getReady", index: ind + 1});
+      eventBus.set({type:"getReady", index: ind + 1, position: "right"});
     }, 100);
 
   }
