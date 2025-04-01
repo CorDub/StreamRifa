@@ -1,5 +1,5 @@
 <script>
-  import { finalists, eventBus } from "./sharedState.svelte";
+  import { quarterfinalists, eventBus } from "./sharedState.svelte";
   let available_positions = $state([0,1,2,3,4,5,6,7]);
   let nombre = $state("");
   let error = $state("");
@@ -32,19 +32,18 @@
     const new_ap = available_positions.filter(elem => elem !== available_positions[randomIndex]);
     available_positions = new_ap;
 
-    finalists[ind] = nombre;
+    quarterfinalists[ind] = nombre;
 
-    eventBus.set({ind: ind, nombre: nombre});
+    eventBus.set({ind: ind, nombre: nombre, stage:"quarterfinal"});
     nombre = "";
 
     if (available_positions.length === 0) {
       eventBus.set({type:"readyForMatches"});
-      console.log("sent");
     }
   }
 
   function checkDouble() {
-    for (const finalist of finalists) {
+    for (const finalist of quarterfinalists) {
       if (finalist === nombre) {
         return true;
       }

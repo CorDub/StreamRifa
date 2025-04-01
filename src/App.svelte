@@ -3,6 +3,7 @@
   import Bracket from "./Bracket.svelte";
   import GlassPanel from "./GlassPanel.svelte";
   import MatchReady from "./MatchReady.svelte";
+  import Contestant from "./Contestant.svelte";
 </script>
 
 <svelte:head>
@@ -19,4 +20,6 @@
   <GlassPanel />
   <Bracket />
   <MatchReady />
+  <Contestant position="left"/>
+  <Contestant position="right"/>
 </div>

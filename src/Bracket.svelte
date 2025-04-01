@@ -38,67 +38,67 @@
     <div class="bracket-third">
       <div class="bracket-corner">
         <div class="bracket-corner">
-          <OneOnOne position={0} />
+          <OneOnOne stage={'quarterfinal'} position={0} />
         </div>
         <div class="bracket-corner">
-          <OneOnOne position={1} />
+          <OneOnOne stage={'quarterfinal'} position={1} />
         </div>
       </div>
 
       <div class="bracket-corner">
         <div class="bracket-corner">
-          <OneOnOne position={2} />
+          <OneOnOne stage={'quarterfinal'} position={2} />
         </div>
         <div class="bracket-corner">
-          <OneOnOne position={3} />
+          <OneOnOne stage={'quarterfinal'} position={3} />
         </div>
       </div>
     </div>
 
     <div class="bracket-third">
       <div class="bracket-corner">
-        <OneOnOne position={"semi-final1"} />
+        <OneOnOne stage={"semifinal"} position={0} />
       </div>
       <div class="bracket-corner">
-        <OneOnOne position={"semi-final2"} />
+        <OneOnOne stage={"semifinal"} position={1} />
       </div>
     </div>
 
     <div class="bracket-third">
-      <OneOnOne position={"final1"} />
+      <OneOnOne stage={"final"} position={0} />
     </div>
   </div>
 
   <div class="bracket-half">
     <div class="bracket-third">
-      <OneOnOne position={"final1"} />
+      <OneOnOne stage={"final"} position={1} />
     </div>
 
     <div class="bracket-third">
       <div class="bracket-corner">
-        <OneOnOne position={"semi-final3"} />
+        <OneOnOne stage={"semifinal"} position={2} />
       </div>
       <div class="bracket-corner">
-        <OneOnOne position={"semi-final4"} />
+        <OneOnOne stage={"semifinal"} position={3} />
       </div>
     </div>
 
     <div class="bracket-third">
       <div class="bracket-corner">
         <div class="bracket-corner">
-          <OneOnOne position={4} />
+          <OneOnOne stage={'quarterfinal'} position={4} />
         </div>
         <div class="bracket-corner">
-          <OneOnOne position={5} />
+          <OneOnOne stage={'quarterfinal'} position={5} />
         </div>
       </div>
 
       <div class="bracket-corner">
         <div class="bracket-corner">
-          <OneOnOne position={6} />
+          <OneOnOne stage={'quarterfinal'} position={6} />
         </div>
         <div class="bracket-corner">
-          <OneOnOne position={7} />
+          <OneOnOne stage={'quarterfinal'} position={7} />
         </div>
       </div>
     </div>

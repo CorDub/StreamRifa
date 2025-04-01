@@ -1,12 +1,12 @@
 <script>
-  let {position} = $props();
-  import { finalists, eventBus } from "./sharedState.svelte";
-  let nombre = $state(finalists[position]);
+  let {stage, position} = $props();
+  import { quarterfinalists, eventBus } from "./sharedState.svelte";
+  let nombre = $state(quarterfinalists[position]);
   let isEditOpen = $state(false);
   let ready = $state("");
 
   eventBus.subscribe((value) => {
-    if (value.ind === position) {
+    if (value.ind === position && value.stage === stage) {
       nombre = value.nombre;
     }
   })
@@ -26,7 +26,7 @@
   let element;
 
   function deleteFinalist() {
-    finalists[position] = "";
+    quarterfinalists[position] = "";
     nombre  = "";
     eventBus.set({type: "reset", ind: position, nombre: nombre});
   }
@@ -38,7 +38,7 @@
   function changeName(e) {
     console.log(e)
     if (e.key === "Enter") {
-      finalists[position] = e.target.value;
+      quarterfinalists[position] = e.target.value;
       nombre = e.target.value;
       isEditOpen = false;
     }
