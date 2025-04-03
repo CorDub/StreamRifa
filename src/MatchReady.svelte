@@ -1,11 +1,13 @@
 <script>
   import { onMount } from "svelte";
-  import { eventBus } from "./sharedState.svelte";
+  import { availableSemiSpots, eventBus } from "./sharedState.svelte";
   let ready = $state('');
   let element;
   let halfWidth = $state(0);
   let halfHeight = $state(0);
-  let availableStartingPositions = $state([0,2,4,6])
+  let availableStartingPositions = $state([0,2,4,6]);
+  let stage = $state("quarterfinal");
+  let availableFinalSpots = $state([0,2]);
 
   onMount(() => {
     halfWidth = element.getBoundingClientRect().width / 2;
@@ -21,17 +23,39 @@
   })
 
   function startMatch() {
-    const randomIndex = Math.floor(Math.random() * availableStartingPositions.length);
-    const ind = availableStartingPositions[randomIndex];
-    const newASP = availableStartingPositions.filter(elem => elem !== availableStartingPositions[randomIndex]);
-    availableStartingPositions = newASP;
-    ready = "";
-
-    eventBus.set({type:"getReady", index: ind, position: "left"});
-    setTimeout(() => {
-      eventBus.set({type:"getReady", index: ind + 1, position: "right"});
-    }, 100);
-
+    if (availableStartingPositions.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableStartingPositions.length);
+      const ind = availableStartingPositions[randomIndex];
+      const newASP = availableStartingPositions.filter(elem => elem !== availableStartingPositions[randomIndex]);
+      availableStartingPositions = newASP;
+      ready = "";
+      eventBus.set({type:"getReady", index: ind, position: "left", stage: stage});
+      setTimeout(() => {
+        eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
+      }, 100);
+    } else if (availableSemiSpots.length === 0 &&availableFinalSpots.length > 0) {
+      const randomIndex = Math.floor(Math.random() * availableFinalSpots.length);
+      const ind = availableFinalSpots[randomIndex];
+      const newASP = availableFinalSpots.filter(elem => elem !== availableFinalSpots[randomIndex]);
+      availableFinalSpots = newASP;
+      stage = "semifinal"
+      ready = "";
+      eventBus.set({type:"getReady", index: ind, position: "left", stage: stage});
+      setTimeout(() => {
+        eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
+      }, 100);
+    } else {
+      const randomIndex = Math.floor(Math.random() * availableFinalSpots.length);
+      const ind = availableFinalSpots[randomIndex];
+      const newASP = availableFinalSpots.filter(elem => elem !== availableFinalSpots[randomIndex]);
+      availableFinalSpots = newASP;
+      stage = "final"
+      ready = "";
+      eventBus.set({type:"getReady", index: ind, position: "left", stage: stage});
+      setTimeout(() => {
+        eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
+      }, 100);
+    }
   }
 </script>
 

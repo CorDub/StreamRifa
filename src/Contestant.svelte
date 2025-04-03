@@ -3,28 +3,69 @@
     quarterfinalists,
     semifinalists,
     availableSemiSpots,
+    finalists,
     eventBus } from "./sharedState.svelte";
   let {position} = $props();
   let ready = $state("");
   let name = $state("");
+  let stage = $state("");
 
   eventBus.subscribe((value) => {
     if (value.type === "getReady" && value.position === position) {
-      name = quarterfinalists[value.index]
-      if (position === "left") {
-        ready = "revealed-left"
+      if (value.stage === "quarterfinal") {
+        name = quarterfinalists[value.index]
+        if (position === "left") {
+          ready = "revealed-left"
+        } else {
+          ready = "revealed-right"
+        }
+      } else if (value.stage === "semifinal") {
+        name = semifinalists[value.index]
+        if (position === "left") {
+          ready = "revealed-left"
+        } else {
+          ready = "revealed-right"
+        }
       } else {
-        ready = "revealed-right"
+        stage = "final"
+        name = finalists[value.index]
+        if (position === "left") {
+          ready = "revealed-left"
+        } else {
+          ready = "revealed-right"
+        }
       }
     }
   });
 
-  function chooseWinner() {
+  eventBus.subscribe((value) => {
+    if (value.type === "retire") {
+      ready = "";
+    }
+  })
+
+  function chooseWinner(stage) {
+    if (stage === 'final') {
+      let ind;
+      if (finalists[0] === "") {
+        finalists[0] = name;
+        ind = 0;
+      } else {
+        finalists[1] = name;
+        ind = 1;
+      }
+      eventBus.set({ind : ind, stage: "final", nombre: name});
+      eventBus.set({type: "readyForMatches"});
+      eventBus.set({type: "retire"});
+      return;
+    }
     const randomIndex = Math.floor(Math.random() * availableSemiSpots.length);
     const ind = availableSemiSpots[randomIndex];
-    availableSemiSpots.filter(elem => elem !== availableSemiSpots[randomIndex]);
+    availableSemiSpots.splice(randomIndex, 1);
     semifinalists[ind] = name;
     eventBus.set({ind : ind, stage: "semifinal", nombre: name});
+    eventBus.set({type: "readyForMatches"});
+    eventBus.set({type: "retire"});
   }
 </script>
 

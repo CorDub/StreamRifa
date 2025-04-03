@@ -12,9 +12,25 @@
   })
 
   eventBus.subscribe((value) => {
-    if (value.type === "getReady") {
-      if (value.index === position) {
+    if (value.type === "getReady" && value.stage === "quarterfinal") {
+      if (value.index === position && value.stage === stage) {
         if (position < 4) {
+          ready = "vamos-left";
+        } else {
+          ready = "vamos-right";
+        }
+      }
+    } else if (value.type === "getReady" && value.stage === "semifinal") {
+      if (value.index === position && value.stage === stage) {
+        if (position < 2) {
+          ready = "vamos-left";
+        } else {
+          ready = "vamos-right";
+        }
+      }
+    } else if (value.type === "getReady" && value.stage === "final") {
+      if (value.index === position && value.stage === stage) {
+        if (position < 1) {
           ready = "vamos-left";
         } else {
           ready = "vamos-right";
@@ -81,11 +97,11 @@
   }
 
   .vamos-left {
-    transform: translateX(-50vh);
+    transform: translateX(-100vh);
   }
 
   .vamos-right {
-    transform: translateX(50vh);
+    transform: translateX(100vh);
   }
 </style>
 
@@ -95,6 +111,8 @@
   {#if nombre}
     <div class="finalist-spot">
       {#if !isEditOpen}
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
         <p class="finalist-name"
           onclick={openEditFinalist}
           >{nombre}</p>
