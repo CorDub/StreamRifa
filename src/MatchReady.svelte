@@ -33,7 +33,7 @@
       setTimeout(() => {
         eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
       }, 100);
-    } else if (availableSemiSpots.length === 0 &&availableFinalSpots.length > 0) {
+    } else if (availableSemiSpots.length === 0 && availableFinalSpots.length > 0) {
       const randomIndex = Math.floor(Math.random() * availableFinalSpots.length);
       const ind = availableFinalSpots[randomIndex];
       const newASP = availableFinalSpots.filter(elem => elem !== availableFinalSpots[randomIndex]);
@@ -44,16 +44,12 @@
       setTimeout(() => {
         eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
       }, 100);
-    } else {
-      const randomIndex = Math.floor(Math.random() * availableFinalSpots.length);
-      const ind = availableFinalSpots[randomIndex];
-      const newASP = availableFinalSpots.filter(elem => elem !== availableFinalSpots[randomIndex]);
-      availableFinalSpots = newASP;
+    } else if (availableFinalSpots.length === 0) {
       stage = "final"
       ready = "";
-      eventBus.set({type:"getReady", index: ind, position: "left", stage: stage});
+      eventBus.set({type:"getReady", index: 0, position: "left", stage: stage});
       setTimeout(() => {
-        eventBus.set({type:"getReady", index: ind + 1, position: "right", stage: stage});
+        eventBus.set({type:"getReady", index: 1, position: "right", stage: stage});
       }, 100);
     }
   }

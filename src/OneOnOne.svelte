@@ -12,6 +12,7 @@
   })
 
   eventBus.subscribe((value) => {
+    console.log(value);
     if (value.type === "getReady" && value.stage === "quarterfinal") {
       if (value.index === position && value.stage === stage) {
         if (position < 4) {
