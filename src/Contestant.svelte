@@ -20,13 +20,14 @@
           ready = "revealed-right"
         }
       } else if (value.stage === "semifinal") {
+        stage = "semifinal";
         name = semifinalists[value.index]
         if (position === "left") {
           ready = "revealed-left"
         } else {
           ready = "revealed-right"
         }
-      } else {
+      } else if (value.stage === "final") {
         stage = "final"
         name = finalists[value.index]
         if (position === "left") {
@@ -44,8 +45,9 @@
     }
   })
 
-  function chooseWinner(stage) {
-    if (stage === 'final') {
+  function chooseWinner() {
+
+    if (stage === 'semifinal') {
       let ind;
       if (finalists[0] === "") {
         finalists[0] = name;
@@ -58,7 +60,12 @@
       eventBus.set({type: "readyForMatches"});
       eventBus.set({type: "retire"});
       return;
+    } else if (stage === "final") {
+      eventBus.set({type: "retire"});
+      eventBus.set({type: "winner", winner: name});
+      return;
     }
+
     const randomIndex = Math.floor(Math.random() * availableSemiSpots.length);
     const ind = availableSemiSpots[randomIndex];
     availableSemiSpots.splice(randomIndex, 1);

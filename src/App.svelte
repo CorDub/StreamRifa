@@ -4,6 +4,7 @@
   import GlassPanel from "./GlassPanel.svelte";
   import MatchReady from "./MatchReady.svelte";
   import Contestant from "./Contestant.svelte";
+  import Winner from "./Winner.svelte";
 </script>
 
 <svelte:head>
@@ -22,4 +23,5 @@
   <MatchReady />
   <Contestant position="left"/>
   <Contestant position="right"/>
+  <Winner />
 </div>
