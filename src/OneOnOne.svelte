@@ -4,6 +4,7 @@
   let nombre = $state(quarterfinalists[position]);
   let isEditOpen = $state(false);
   let ready = $state("");
+  let editable = $state(true);
 
   eventBus.subscribe((value) => {
     if (value.ind === position && value.stage === stage) {
@@ -12,8 +13,8 @@
   })
 
   eventBus.subscribe((value) => {
-    console.log(value);
     if (value.type === "getReady" && value.stage === "quarterfinal") {
+      editable = false;
       if (value.index === position && value.stage === stage) {
         if (position < 4) {
           ready = "vamos-left";
@@ -49,6 +50,9 @@
   }
 
   function openEditFinalist() {
+    if (editable === false) {
+      return;
+    }
     isEditOpen = true;
   }
 
@@ -123,9 +127,11 @@
           value={nombre}
           onkeydown={(e) => changeName(e)}/>
       {/if}
-      <button class="finalist-cancel"
-        onclick={deleteFinalist}
-        >X</button>
+      {#if editable}
+        <button class="finalist-cancel"
+          onclick={deleteFinalist}
+          >X</button>
+      {/if}
     </div>
   {:else}
     <p>Posicion disponible</p>
