@@ -1,4 +1,5 @@
 <script>
+  import { onMount } from 'svelte';
   import {
     quarterfinalists,
     semifinalists,
@@ -9,6 +10,16 @@
   let ready = $state("");
   let name = $state("");
   let stage = $state("");
+  let element;
+  let halfWidth = $state(0);
+  let halfHeight = $state(0);
+
+  onMount(() => {
+    halfWidth = element.getBoundingClientRect().width / 2;
+    halfHeight = element.getBoundingClientRect().height / 2;
+    element.style.setProperty('--halfWidth', halfWidth + "px");
+    element.style.setProperty('--halfHeight', halfHeight + "px");
+  })
 
   eventBus.subscribe((value) => {
     if (value.type === "getReady" && value.position === position) {
@@ -85,15 +96,19 @@
     border-radius: 15px;
     padding: 1rem;
     display: flex;
-    top: 50%;
+    top: calc(50% - var(--halfHeight));
   }
 
   .contestant:hover {
     cursor: pointer;
   }
 
+  .contestant p {
+    font-size: 1.5em;
+  }
+
   .left {
-    left: -25%;
+    left: calc(-25% - var(--halfWidth));
   }
 
   .revealed-left {
@@ -101,7 +116,7 @@
   }
 
   .right {
-    left: 125%;
+    left: calc(125% - var(--halfWidth));
   }
 
   .revealed-right {
@@ -116,6 +131,7 @@
   class="contestant
   {ready ? ready : ''}
   {position === 'left' ? 'left' : 'right' }"
-  onclick={chooseWinner}>
+  onclick={chooseWinner}
+  bind:this={element}>
   <p>{name ? name : 'Gilles'}</p>
 </div>
