@@ -1,4 +1,5 @@
 <script>
+    import { onMount } from "svelte";
   import { quarterfinalists, eventBus } from "./sharedState.svelte";
   let available_positions = $state([0,1,2,3,4,5,6,7]);
   let nombre = $state("");
@@ -10,6 +11,182 @@
   let trackingMouseY = $state(0);
   let topDiff = $state();
   let leftDiff = $state();
+  const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}";
+  let char_values = {};
+  let primaryColor = $state("rgb(255,255,255)");
+
+  $effect(() => {
+    console.log("primaryColor", primaryColor);
+  });
+
+  onMount(() => {
+    linearMultCharValue();
+    console.log(char_values);
+  });
+
+  function naiveCharValue() {
+    for (let i = 0; i < chars.length; i++) {
+      char_values[chars[i]] = ((i * 255) / chars.length)/2;
+    };
+  }
+
+  function doubleNaiveCharValue() {
+    for (let i = 0; i < chars.length; i++) {
+      char_values[chars[i]] = ((i * 255) / chars.length)*2;
+    };
+  }
+
+  function linearMultCharValue() {
+    for (let i = 0; i < chars.length; i++) {
+      char_values[chars[i]] = [
+        (i * 255) / (chars.length * 1),
+        (i * 255) / (chars.length * 2),
+        (i * 255) / (chars.length * 3),
+      ]
+    }
+  }
+
+  function leakyContainerPrimaryColor() {
+    let rgb = {
+      r: 0,
+      g: 0,
+      b: 0
+    }
+
+    for (let i = 0; i < nombre.length; i++) {
+      if (rgb.r < 255 && rgb.g === 0 && rgb.b === 0) {
+        rgb.r += char_values[nombre[i]];
+        if (rgb.r > 255) {
+          rgb.g += rgb.r-255;
+          rgb.r = 255;
+        };
+      } else if (rgb.r === 255 && rgb.g < 255 && rgb.b === 0) {
+        rgb.g += char_values[nombre[i]];
+        if (rgb.g > 255) {
+          rgb.r -= rgb.g-255;
+          rgb.g = 255;
+        };
+      } else if (rgb.r > 0 && rgb.g === 255 && rgb.b === 0) {
+        rgb.r -= char_values[nombre[i]];
+        if (rgb.r < 0) {
+          rgb.b += 0 - rgb.r;
+          rgb.r = 0;
+        }
+      } else if (rgb.r === 0 && rgb.g === 255 && rgb.b < 255) {
+        rgb.b += char_values[nombre[i]];
+        if (rgb.b > 255) {
+          rgb.g -= rgb.b-255;
+          rgb.b = 255;
+        };
+      } else if (rgb.r === 0 && rgb.g < 255 && rgb.b === 255) {
+        rgb.g -= char_values[nombre[i]];
+        if (rgb.g < 0) {
+          rgb.r += 0 - rgb.g;
+          rgb.g = 0;
+        }
+      } else if (rgb.r < 255 && rgb.g === 0 && rgb.b === 255) {
+        rgb.r += char_values[nombre[i]];
+        if (rgb.r > 255) {
+          rgb.b -= rgb.r - 255;
+          rgb.r = 255;
+        }
+      } else if (rgb.r === 255 && rgb.g === 0 && rgb.b < 255) {
+        rgb.b -= char_values[nombre[i]];
+        if (rgb.b < 0) {
+          rgb.g += 0 - rgb.b;
+          rgb.b = 0;
+        }
+      }
+    }
+
+    rgb.r = Math.trunc(rgb.r);
+    rgb.g = Math.trunc(rgb.g);
+    rgb.b = Math.trunc(rgb.b);
+    console.log(rgb);
+
+    primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+  }
+
+  function linearMultPrimaryColor() {
+    let rgb = {
+      r: 0,
+      g: 0,
+      b: 0
+    }
+
+    for (let i = 0; i < nombre.length; i++) {
+      if (nombre[i] === " ") {
+        continue;
+      };
+
+      rgb.r += char_values[nombre[i]][0],
+      rgb.r = clampRGBValue(rgb.r);
+      rgb.g += char_values[nombre[i]][1],
+      rgb.g = clampRGBValue(rgb.g);
+      rgb.b += char_values[nombre[i]][2],
+      rgb.b = clampRGBValue(rgb.b);
+    }
+
+    console.log(rgb);
+    primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+  }
+
+  function determinePrimaryColor() {
+    let rgb = {
+      r: 0,
+      g: 0,
+      b: 0
+    };
+
+    if (nombre.length === 1) {
+      rgb.r += char_values[nombre];
+      rgb.g += char_values[nombre];
+      rgb.b += char_values[nombre];
+      console.log(rgb);
+      primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      return;
+    }
+
+    if (nombre.length === 2) {
+      rgb.r += char_values[nombre[0]];
+      rgb.g += char_values[nombre[1]];
+      rgb.b += char_values[nombre[0]] + char_values[nombre[1]];
+      console.log(rgb);
+      primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+      return;
+    }
+
+    let counter = 0;
+    for (let i = 0; i < nombre.length; i++) {
+      if (nombre[i] === " ") {
+        continue;
+      };
+
+      counter += 1;
+      if (counter === 1) {
+        rgb.r += char_values[nombre[i]];
+        rgb.r = clampRGBValue(rgb.r);
+      } else if (counter === 2) {
+        rgb.g += char_values[nombre[i]];
+        rgb.g = clampRGBValue(rgb.g);
+      } else {
+        rgb.b += char_values[nombre[i]];
+        rgb.b = clampRGBValue(rgb.b);
+        counter = 0;
+      }
+    }
+    console.log(rgb);
+    primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
+    return;
+  }
+
+  function clampRGBValue(value) {
+    if (value < 255) {
+      return value;
+    }
+    let res = value % nombre.length;
+    return clampRGBValue(res);
+  }
 
   eventBus.subscribe((value) => {
     if (value.type === "reset") {
@@ -107,7 +284,7 @@
     border: 1px solid grey;
     padding: 1rem;
     border-radius: 15px;
-    background-color: white;
+    /* background-color: rgb(180,3,241); */
   }
 
   .form:hover {
@@ -156,6 +333,7 @@
   <form
     bind:this={form}
     class="form"
+    style="background-color: {primaryColor}"
     onmousedown={setStart}
     onmousemove={drag}
     onmouseup={drop}>
@@ -169,6 +347,7 @@
       id="finalista"
       class="form-input"
       placeholder="Nombre"
+      oninput={linearMultPrimaryColor}
       bind:value={nombre}/>
     <button
       type="button"
