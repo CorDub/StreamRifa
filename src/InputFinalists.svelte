@@ -20,7 +20,7 @@
   });
 
   onMount(() => {
-    linearMultCharValue();
+    doubleNaiveCharValue();
     console.log(char_values);
   });
 
@@ -44,6 +44,112 @@
         (i * 255) / (chars.length * 3),
       ]
     }
+  }
+
+  function towerPrimaryColor() {
+    if (nombre.length === 0) {
+      primaryColor = `rgb(${255}, ${255}, ${255})`;
+      return;
+    }
+
+    let total = 0;
+    for (let i = 0; i < nombre.length; i++) {
+      if (nombre[i] === " ") {
+        continue;
+      }
+      total += char_values[nombre[i]]
+    };
+
+    let floor = Math.trunc(total/255);
+    if (floor > 8) {
+      floor = floor % 8;
+    }
+
+    const remaining = total % 255;
+
+    let rgb = {
+      r: 0,
+      g: 0,
+      b: 0
+    }
+
+    switch (floor) {
+      case 0:
+        rgb.r = 255 - remaining;
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 255 - remaining;
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 255 - remaining;
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 1:
+        rgb.r = 0 + remaining;
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 0;
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 0;
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 2:
+        rgb.r = 255 - (remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 0 + remaining + (remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 0 + (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 3:
+        rgb.r = 255 - remaining - (remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 255 - (remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 0 + (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 4:
+        rgb.r = 0 + (remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 255 - (remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 0 + remaining + (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 5:
+        rgb.r = 0 + (remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 255 - remaining - (remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 255 - (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 6:
+        rgb.r = 0 + remaining +(remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 0 + (remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 255 - (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 7:
+        rgb.r = 255 - (remaining / 3);
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 0 +(remaining / 3);
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 255 - remaining - (remaining / 3);
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+      case 8:
+        rgb.r = 255;
+        rgb.r = clampRGBValue(rgb.r);
+        rgb.g = 0 + remaining;
+        rgb.g = clampRGBValue(rgb.g);
+        rgb.b = 0 + remaining;
+        rgb.b = clampRGBValue(rgb.b);
+        break;
+    }
+
+    console.log("rgb", rgb);
+    primaryColor = `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`;
   }
 
   function leakyContainerPrimaryColor() {
@@ -181,9 +287,14 @@
   }
 
   function clampRGBValue(value) {
-    if (value < 255) {
+    if (value < 255 && value >= 0) {
       return value;
     }
+
+    if (value < 0) {
+      return 0;
+    }
+
     let res = value % nombre.length;
     return clampRGBValue(res);
   }
@@ -347,7 +458,7 @@
       id="finalista"
       class="form-input"
       placeholder="Nombre"
-      oninput={linearMultPrimaryColor}
+      oninput={towerPrimaryColor}
       bind:value={nombre}/>
     <button
       type="button"
